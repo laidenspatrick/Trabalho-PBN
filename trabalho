@@ -1,0 +1,181 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h> 
+
+typedef struct {
+    int r, g, b;
+} RGB;
+int main () 
+{
+    FILE *fp;
+    
+    char imagem[50];
+    printf("Digite o nome da imagen colorida");
+    scanf("%s",&imagem);
+  	fp = fopen(imagem.ppm,"r");
+	if(fp==NULL){
+		printf("Erro ao abrir o arquivo!");
+        return 1;
+		}
+
+  	char tipoImg[3];
+
+  	int i, j, linha, coluna, val, r, g, b, opcao;
+  	
+  	fscanf(fp, "%s", tipoImg); // le o tipo de imagem P3 (color), P2 (P&B) 
+  	printf("%s\n", tipoImg);
+  	
+  	fscanf(fp, "%d %d", &coluna, &linha); // le o tamanho da matriz  
+  	printf("%d %d\n", coluna, linha);
+
+      if (coluna < 400 ||  linha < 400) {
+        printf("Imagem menor que 400x400!\n");
+        fclose(fp);
+        return 1;
+    }
+  	
+  	fscanf(fp, "%d", &val); // le o valor maximo. 
+  	printf("%d\n", val);
+
+      RGB matriz[700][700];
+
+	for(j=0; j<linha; j++)
+	{
+		for(i=0; i<coluna; i++)
+		{  	
+  			fscanf(fp, "%d %d %d", &r, &g, &b);
+		  	//printf("%d %d %d\n", r, g, b);
+		  	matriz[j][i] = ((r*0.30)+(g*0.59)+(b*0.11));
+		  	//printf("%d\n", matriz[j][i]);
+		}
+	}
+	printf("leu todo o arquivo e gerou vetor p&b\n");
+  	fclose(fp);
+
+      printf ("1- Transformar colorida em uma imagem tons de cinza");
+      printf ("2- Transformar colorida em uma imagem negativa");
+      printf ("3- Transformar colorida em uma imagem raio-x");
+      printf ("4- Transformar colorida em uma imagem envelhecida (sépia)");
+      printf ("5- Rotacionar colorida em 90 graus");
+      printf ("6- Rotacionar colorida em 180 graus");
+      printf ("Qual voce deseja fazer?");
+      scanf ("%d", &opcao);
+
+      FILE *fp_novo = fopen("saida.ppm", "w");
+      if (fp_novo == NULL) {
+          printf("Erro ao criar o arquivo de saída!\n");
+          return 1;
+      }  
+
+      if (opcao == 1) 
+      { 
+            fprintf (fp_novo, "P2\n");
+            fprintf (fp_novo, "%d %d\n", coluna, linha);
+            fprintf (fp_novo, "%d\n", val);
+    
+            for(j=0; j<linha; j++)
+            {
+                for(i=0; i<coluna; i++)
+                {  	
+                int cinza = (matriz[j][i].r * 0.299) + (matriz[j][i].g * 0.587) + (matriz[j][i].b * 0.114);
+                fprintf(fp_novo, "%d\n", cinza);
+                }
+            }
+      } else if (opcao == 2)
+      {
+            fprintf (fp_novo, "P3\n");
+            fprintf (fp_novo, "%d %d\n", coluna, linha);
+            fprintf (fp_novo, "%d\n", val);
+    
+            for(j=0; j<linha; j++)
+            {
+                for(i=0; i<coluna; i++)
+                {  	
+                    int R_novo = 255 - matriz[j][i].r;
+                    int G_novo = 255 - matriz[j][i].g;
+                    int B_novo = 255 - matriz[j][i].b;
+                    fprintf(fp_novo, "%d %d %d\n", R_novo, G_novo, B_novo);
+                }
+            }
+      } else if (opcao == 3) {
+        
+            fprintf (fp_novo, "P4\n");
+            fprintf (fp_novo, "%d %d\n", coluna, linha);
+            fprintf (fp_novo, "%d\n", val);
+
+            float fator;
+
+            printf ("Digite um valor pro fator que seja entre 1 e 2");
+            scanf ("%d", &fator)
+
+            if(fator > 2){
+                fator = 2;
+            } else if (fator < 1) {
+                fator = 1;
+            }
+    
+            for(j=0; j<linha; j++)
+            {
+                for(i=0; i<coluna; i++)
+                {  	
+                    int cinza = (matriz[j][i].r * 0.299) + (matriz[j][i].g * 0.587) + (matriz[j][i].b * 0.114);
+                    int raioX = pow(cinza, fator) / pow(255, fator-1);
+                    if (raioX > 255) raioX = 255;
+                    fprintf(fp_novo, "%d\n", raioX);
+                }
+            }
+      } else if (opcao == 4)
+      {
+            fprintf (fp_novo, "P5\n");
+            fprintf (fp_novo, "%d %d\n", coluna, linha);
+            fprintf (fp_novo, "%d\n", val);
+
+            float fator2 = 0.1;
+    
+            for(j=0; j<linha; j++)
+            {
+                for(i=0; i<coluna; i++)
+                {  	
+                    int R_novo2 = r * (1+ fator2);
+                    int G_novo2 = g * (1+ fator2);
+                    int B_novo2 = b * (1 - fator2);
+                    fprintf(fp_novo, "%d %d %d\n", R_novo2, G_novo2, B_novo2);
+                }
+            }
+      } else if (opcao == 5) 
+      {
+            fprintf (fp_novo, "P6\n");
+            fprintf (fp_novo, "%d %d\n", linha, coluna);
+            fprintf (fp_novo, "%d\n", val);
+    
+            for(j=0; j<linha; j++)
+            {
+                for(i= coluna - 1; i>= 0; i--)
+                {  	
+                    fprintf(fp_novo, "%d %d %d\n", matriz[j][i].r, matriz[j][i].g, matriz[j][i].b);
+                }
+            }
+      } else if (opcao == 6) 
+      {
+        fprintf(fp_novo, "P7\n"); 
+        fprintf(fp_novo "%d %d\n", coluna , linha);
+        fprintf(fp_novo, "%d\n", val);
+        
+        for (int i = linha - 1; i >= 0; i--) {
+            for (int j = coluna - 1; j >= 0; j--) {
+                fprintf(fp_novo, "%d %d %d\n", matriz[j][i].r, matriz[j][i].g, matriz[j][i].b);
+            }
+        }
+    }
+    else {
+        printf("Opção inválida!\n");
+        fclose(fp_novo);
+        return 1;
+    }
+    
+    fclose(fp_novo);
+    printf("Imagem processada e salva em 'saida.ppm'!\n");
+    
+    return 0;
+      }
+}
