@@ -10,9 +10,9 @@ int main ()
     FILE *fp;
     
     char imagem[50];
-    printf("Digite o nome da imagen colorida");
+    printf("Digite o nome da imagen colorida, com .ppm");
     scanf("%s",&imagem);
-  	fp = fopen(imagem.ppm,"r");
+  	fp = fopen(imagem,"r");
 	if(fp==NULL){
 		printf("Erro ao abrir o arquivo!");
         return 1;
@@ -43,13 +43,9 @@ int main ()
 	{
 		for(i=0; i<coluna; i++)
 		{  	
-  			fscanf(fp, "%d %d %d", &r, &g, &b);
-		  	//printf("%d %d %d\n", r, g, b);
-		  	matriz[j][i] = ((r*0.30)+(g*0.59)+(b*0.11));
-		  	//printf("%d\n", matriz[j][i]);
+  			fscanf(fp, "%d %d %d", &matriz[j[i].r, &matriz[j][i].g, &matriz[j][i].b);
 		}
 	}
-	printf("leu todo o arquivo e gerou vetor p&b\n");
   	fclose(fp);
 
       printf ("1- Transformar colorida em uma imagem tons de cinza");
@@ -136,9 +132,9 @@ int main ()
             {
                 for(i=0; i<coluna; i++)
                 {  	
-                    int R_novo2 = r * (1+ fator2);
-                    int G_novo2 = g * (1+ fator2);
-                    int B_novo2 = b * (1 - fator2);
+                    int R_novo2 = matriz[j][i].r * (1+ fator2);
+                    int G_novo2 = matriz[j][i].g * (1+ fator2);
+                    int B_novo2 = matriz[j][i].b * (1 - fator2);
                     fprintf(fp_novo, "%d %d %d\n", R_novo2, G_novo2, B_novo2);
                 }
             }
@@ -148,9 +144,9 @@ int main ()
             fprintf (fp_novo, "%d %d\n", linha, coluna);
             fprintf (fp_novo, "%d\n", val);
     
-            for(j=0; j<linha; j++)
+            for(i=0; i<coluna; i++)
             {
-                for(i= coluna - 1; i>= 0; i--)
+                for(j= linha - 1; j>= 0; j--)
                 {  	
                     fprintf(fp_novo, "%d %d %d\n", matriz[j][i].r, matriz[j][i].g, matriz[j][i].b);
                 }
@@ -161,8 +157,8 @@ int main ()
         fprintf(fp_novo "%d %d\n", coluna , linha);
         fprintf(fp_novo, "%d\n", val);
         
-        for (int i = linha - 1; i >= 0; i--) {
-            for (int j = coluna - 1; j >= 0; j--) {
+        for (int j = linha - 1; j >= 0; j--) {
+            for (int i = coluna - 1; i >= 0; i--) {
                 fprintf(fp_novo, "%d %d %d\n", matriz[j][i].r, matriz[j][i].g, matriz[j][i].b);
             }
         }
