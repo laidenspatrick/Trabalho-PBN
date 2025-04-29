@@ -109,7 +109,6 @@ int main ()
             fprintf (fp_novo, "P2\n");
             fprintf (fp_novo, "%d %d\n", coluna, linha);
             fprintf (fp_novo, "%d\n", val);
-            RGB matriz_raiox[j][i];
             int fator = 1;
     
             for(j=0; j<linha; j++)
@@ -117,10 +116,10 @@ int main ()
                 for(i=0; i<coluna; i++)
                 {   
                  int cinza = (matriz[j][i].r * 0.299) + (matriz[j][i].g * 0.587) + (matriz[j][i].b * 0.114);
-                 matriz_raiox [j][i].r = cinza ^ fator;
-                 matriz_raiox [j][i].g = cinza ^ fator;
-                 matriz_raiox [j][i].b = cinza ^ fator;
-            fprintf(fp_novo, "%d %d %d\n", matriz_raiox [j][i].r, matriz_raiox [j][i].g, matriz_raiox [j][i].b);
+                 matriz[j][i].r = cinza ^ fator;
+                 matriz[j][i].g = cinza ^ fator;
+                 matriz[j][i].b = cinza ^ fator;
+            fprintf(fp_novo, "%d %d %d\n", matriz[j][i].r, matriz[j][i].g, matriz[j][i].b);
                 }
             }
       } else if (opcao == 4)
@@ -188,3 +187,4 @@ int main ()
     
     return 0;
       }
+
