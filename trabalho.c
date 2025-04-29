@@ -20,12 +20,12 @@ int main ()
 
   	char tipoImg[3];
 
-  	int i, j, linha, coluna, val, r, g, b, opcao;
+  	int i, j, linha, coluna, val, opcao;
   	
-  	fscanf(fp, "%s", tipoImg); // le o tipo de imagem P3 (color), P2 (P&B) 
+  	fscanf(fp, "%s", tipoImg);
   	printf("%s\n", tipoImg);
   	
-  	fscanf(fp, "%d %d", &coluna, &linha); // le o tamanho da matriz  
+  	fscanf(fp, "%d %d", &coluna, &linha);  
   	printf("%d %d\n", coluna, linha);
 
       if (coluna < 400 ||  linha < 400) {
@@ -34,7 +34,7 @@ int main ()
         return 1;
     }
   	
-  	fscanf(fp, "%d", &val); // le o valor maximo. 
+  	fscanf(fp, "%d", &val);  
   	printf("%d\n", val);
 
       RGB matriz[700][700];
@@ -74,7 +74,9 @@ int main ()
                 for(i=0; i<coluna; i++)
                 {  	
                 int cinza = (matriz[j][i].r * 0.299) + (matriz[j][i].g * 0.587) + (matriz[j][i].b * 0.114);
-                fprintf(fp_novo, "%d\n", cinza);
+                if (cinza > 255) cinza = 255;
+                if (cinza < 0) cinza = 0;
+			fprintf(fp_novo, "%d\n", cinza);
                 }
             }
       } else if (opcao == 2)
@@ -115,8 +117,9 @@ int main ()
                 for(i=0; i<coluna; i++)
                 {  	
                     int cinza = (matriz[j][i].r * 0.299) + (matriz[j][i].g * 0.587) + (matriz[j][i].b * 0.114);
-                    int raioX = pow(cinza, fator) / pow(255, fator-1);
+                    int raioX = pow(cinza,fator);
                     if (raioX > 255) raioX = 255;
+		    if (raioX < 0) raioX = 0;
                     fprintf(fp_novo, "%d\n", raioX);
                 }
             }
@@ -135,6 +138,13 @@ int main ()
                     int R_novo2 = matriz[j][i].r * (1+ fator2);
                     int G_novo2 = matriz[j][i].g * (1+ fator2);
                     int B_novo2 = matriz[j][i].b * (1 - fator2);
+
+		     if (R_novo2 > 255) R_novo2 = 255;
+                if (G_novo2 > 255) G_novo2 = 255;
+                if (B_novo2 > 255) B_novo2 = 255;
+                if (R_novo2< 0) R_novo2 = 0;
+                if (G_novo2< 0) G_novo2 = 0;
+                if (B_novo2 < 0) B_novo2 = 0;
                     fprintf(fp_novo, "%d %d %d\n", R_novo2, G_novo2, B_novo2);
                 }
             }
