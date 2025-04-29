@@ -36,7 +36,10 @@ int main ()
     fscanf(fp, "%d", &val);  
     printf("%d\n", val);
 
-      RGB matriz[linha][coluna];
+      RGB **matriz = malloc(linha * sizeof(RGB*));
+      for(j = 0; j<linha; j++) {
+        matriz[j] = malloc (coluna * sizeof(RGB));
+      }
 
     for(j=0; j<linha; j++)
     {
@@ -132,9 +135,9 @@ int main ()
             {
                 for(i=0; i<coluna; i++)
                 {   
-                    matriz[j][i].r = matriz[j][i].r * (1 + fator2) + 10;
-                    matriz[j][i].g = matriz[j][i].g * (1 + fator2) + 10;
-                    matriz[j][i].b = matriz[j][i].b * (1 - fator2) - 10;
+                    matriz[j][i].r = matriz[j][i].r * (1 + fator2);
+                    matriz[j][i].g = matriz[j][i].g * (1 + fator2);
+                    matriz[j][i].b = matriz[j][i].b * (1 - fator2);
 
              if (matriz[j][i].r > 255) matriz[j][i].r = 255;
                 if (matriz[j][i].g  > 255) matriz[j][i].g  = 255;
@@ -177,6 +180,10 @@ int main ()
     }
     
     fclose(fp_novo);
+    for(j = 0; j< linha; j++) {
+        free(matriz[j]);
+    }
+    free (matriz);
     printf("Imagem processada e salva em 'saida.ppm'!\n");
     
     return 0;
