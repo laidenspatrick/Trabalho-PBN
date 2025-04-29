@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h> 
 
 typedef struct {
     int r, g, b;
@@ -10,51 +9,58 @@ int main ()
     FILE *fp;
     
     char imagem[50];
-    printf("Digite o nome da imagen colorida, com .ppm");
-    scanf("%s",&imagem);
-  	fp = fopen(imagem,"r");
-	if(fp==NULL){
-		printf("Erro ao abrir o arquivo!");
+    printf("Digite o nome da imagen colorida, com .ppm: ");
+    scanf("%s", imagem);
+    fp = fopen(imagem,"r");
+    if(fp==NULL){
+        printf("Erro ao abrir o arquivo!");
         return 1;
-		}
+        }
 
-  	char tipoImg[3];
+    char tipoImg[3];
 
-  	int i, j, linha, coluna, val, opcao;
-  	
-  	fscanf(fp, "%s", tipoImg);
-  	printf("%s\n", tipoImg);
-  	
-  	fscanf(fp, "%d %d", &coluna, &linha);  
-  	printf("%d %d\n", coluna, linha);
+    int i, j, linha, coluna, val, opcao;
+    
+    fscanf(fp, "%s", tipoImg);
+    printf("%s\n", tipoImg);
+    
+    fscanf(fp, "%d %d", &coluna, &linha); 
+    printf("%d %d\n", coluna, linha);
 
       if (coluna < 400 ||  linha < 400) {
         printf("Imagem menor que 400x400!\n");
         fclose(fp);
         return 1;
     }
-  	
-  	fscanf(fp, "%d", &val);  
-  	printf("%d\n", val);
+    
+    fscanf(fp, "%d", &val);  
+    printf("%d\n", val);
 
-      RGB matriz[700][700];
+      RGB matriz[linha][coluna];
 
-	for(j=0; j<linha; j++)
-	{
-		for(i=0; i<coluna; i++)
-		{  	
-  			fscanf(fp, "%d %d %d", &matriz[j[i].r, &matriz[j][i].g, &matriz[j][i].b);
-		}
-	}
-  	fclose(fp);
+    for(j=0; j<linha; j++)
+    {
+        for(i=0; i<coluna; i++)
+        {   
+            fscanf(fp, "%d %d %d", &matriz[j][i].r, &matriz[j][i].g, &matriz[j][i].b);
+        }
+    }
+    fclose(fp);
 
-      printf ("1- Transformar colorida em uma imagem tons de cinza");
-      printf ("2- Transformar colorida em uma imagem negativa");
-      printf ("3- Transformar colorida em uma imagem raio-x");
-      printf ("4- Transformar colorida em uma imagem envelhecida (sépia)");
-      printf ("5- Rotacionar colorida em 90 graus");
-      printf ("6- Rotacionar colorida em 180 graus");
-      printf ("Qual voce deseja fazer?");
+      printf ("1- Transformar colorida em uma imagem tons de cinza ");
+
+      printf ("2- Transformar colorida em uma imagem negativa ");
+
+      printf ("3- Transformar colorida em uma imagem raio-x ");
+
+      printf ("4- Transformar colorida em uma imagem envelhecida (sépia) ");
+
+      printf ("5- Rotacionar colorida em 90 graus ");
+
+      printf ("6- Rotacionar colorida em 180 graus ");
+
+      printf ("Qual voce deseja fazer? ");
+
       scanf ("%d", &opcao);
 
       FILE *fp_novo = fopen("saida.ppm", "w");
@@ -72,11 +78,11 @@ int main ()
             for(j=0; j<linha; j++)
             {
                 for(i=0; i<coluna; i++)
-                {  	
+                {   
                 int cinza = (matriz[j][i].r * 0.299) + (matriz[j][i].g * 0.587) + (matriz[j][i].b * 0.114);
                 if (cinza > 255) cinza = 255;
                 if (cinza < 0) cinza = 0;
-			fprintf(fp_novo, "%d\n", cinza);
+            fprintf(fp_novo, "%d\n", cinza);
                 }
             }
       } else if (opcao == 2)
@@ -88,7 +94,7 @@ int main ()
             for(j=0; j<linha; j++)
             {
                 for(i=0; i<coluna; i++)
-                {  	
+                {   
                     int R_novo = 255 - matriz[j][i].r;
                     int G_novo = 255 - matriz[j][i].g;
                     int B_novo = 255 - matriz[j][i].b;
@@ -97,74 +103,65 @@ int main ()
             }
       } else if (opcao == 3) {
         
-            fprintf (fp_novo, "P4\n");
+            fprintf (fp_novo, "P2\n");
             fprintf (fp_novo, "%d %d\n", coluna, linha);
             fprintf (fp_novo, "%d\n", val);
-
-            float fator;
-
-            printf ("Digite um valor pro fator que seja entre 1 e 2");
-            scanf ("%d", &fator)
-
-            if(fator > 2){
-                fator = 2;
-            } else if (fator < 1) {
-                fator = 1;
-            }
+            RGB matriz_raiox[j][i];
+            int fator = 1;
     
             for(j=0; j<linha; j++)
             {
                 for(i=0; i<coluna; i++)
-                {  	
-                    int cinza = (matriz[j][i].r * 0.299) + (matriz[j][i].g * 0.587) + (matriz[j][i].b * 0.114);
-                    int raioX = pow(cinza,fator);
-                    if (raioX > 255) raioX = 255;
-		    if (raioX < 0) raioX = 0;
-                    fprintf(fp_novo, "%d\n", raioX);
+                {   
+                 int cinza = (matriz[j][i].r * 0.299) + (matriz[j][i].g * 0.587) + (matriz[j][i].b * 0.114);
+                 matriz_raiox [j][i].r = cinza ^ fator;
+                 matriz_raiox [j][i].g = cinza ^ fator;
+                 matriz_raiox [j][i].b = cinza ^ fator;
+            fprintf(fp_novo, "%d %d %d\n", matriz_raiox [j][i].r, matriz_raiox [j][i].g, matriz_raiox [j][i].b);
                 }
             }
       } else if (opcao == 4)
       {
-            fprintf (fp_novo, "P5\n");
+            fprintf (fp_novo, "P3\n");
             fprintf (fp_novo, "%d %d\n", coluna, linha);
             fprintf (fp_novo, "%d\n", val);
 
-            float fator2 = 0.1;
+            double fator2 = 0.1;
     
             for(j=0; j<linha; j++)
             {
                 for(i=0; i<coluna; i++)
-                {  	
-                    int R_novo2 = matriz[j][i].r * (1+ fator2);
-                    int G_novo2 = matriz[j][i].g * (1+ fator2);
-                    int B_novo2 = matriz[j][i].b * (1 - fator2);
+                {   
+                    matriz[j][i].r = matriz[j][i].r * (1 + fator2) + 10;
+                    matriz[j][i].g = matriz[j][i].g * (1 + fator2) + 10;
+                    matriz[j][i].b = matriz[j][i].b * (1 - fator2) - 10;
 
-		     if (R_novo2 > 255) R_novo2 = 255;
-                if (G_novo2 > 255) G_novo2 = 255;
-                if (B_novo2 > 255) B_novo2 = 255;
-                if (R_novo2< 0) R_novo2 = 0;
-                if (G_novo2< 0) G_novo2 = 0;
-                if (B_novo2 < 0) B_novo2 = 0;
-                    fprintf(fp_novo, "%d %d %d\n", R_novo2, G_novo2, B_novo2);
+             if (matriz[j][i].r > 255) matriz[j][i].r = 255;
+                if (matriz[j][i].g  > 255) matriz[j][i].g  = 255;
+                if (matriz[j][i].b > 255) matriz[j][i].b  = 255;
+                if (matriz[j][i].r  < 0) matriz[j][i].r  = 0;
+                if (matriz[j][i].g < 0) matriz[j][i].g = 0;
+                if (matriz[j][i].b  < 0) matriz[j][i].b = 0;
+                    fprintf(fp_novo, "%d %d %d\n", matriz[j][i].r , matriz[j][i].g , matriz[j][i].r );
                 }
             }
       } else if (opcao == 5) 
       {
-            fprintf (fp_novo, "P6\n");
+            fprintf (fp_novo, "P3\n");
             fprintf (fp_novo, "%d %d\n", linha, coluna);
             fprintf (fp_novo, "%d\n", val);
     
             for(i=0; i<coluna; i++)
             {
                 for(j= linha - 1; j>= 0; j--)
-                {  	
+                {   
                     fprintf(fp_novo, "%d %d %d\n", matriz[j][i].r, matriz[j][i].g, matriz[j][i].b);
                 }
             }
       } else if (opcao == 6) 
       {
-        fprintf(fp_novo, "P7\n"); 
-        fprintf(fp_novo "%d %d\n", coluna , linha);
+        fprintf(fp_novo, "P3\n"); 
+        fprintf(fp_novo, "%d %d\n", coluna , linha);
         fprintf(fp_novo, "%d\n", val);
         
         for (int j = linha - 1; j >= 0; j--) {
@@ -184,4 +181,3 @@ int main ()
     
     return 0;
       }
-}
